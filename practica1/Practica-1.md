@@ -2,29 +2,28 @@
 
 ## Ejercicio 1 - Álgebra de Matrices
 
-a 1
+### Inciso Ai
 
-- pendiente hacer los “N” potencias de 2 -> 512 y 1024
-Con un N = 1000
-Ejecución Original : 0.120981 segundos
-Ejecución sin Overhead : 85.241256 segundos
+Con un N = 1024
+Ejecución Original : Tiempo en segundos 55.154259
+Ejecución sin Overhead : Tiempo en segundos 5.157322
 
 Estas funciones son necesarias cuando queremos decidir que tipo de recorrido en la matriz queremos realizar.
 Cambiando el valor de la definición ORDEN FILAS u ORDEN COLUMNAS podremos alternar el recorrido.
 
 Perdemos desde el código la decisión del recorrido a cambio de una rapidez en el orden de ejecución en la magnitud de un orden de diferencia.
 
-a 2
+### Inciso Aii
 
-Con un N = 1000
-Multiplicación por FILAS = 14.603265 segundos
-Multiplicación por COLUMNAS = 11.163515 segundos
+Con un N = 1024
+Multiplicación por FILAS = Tiempo en segundos 5.041677
+Multiplicación por COLUMNAS = Tiempo en segundos 5.441509
 
 La mejora es mínima en con esta cantidad de valores y comparada con la eliminación del Overhead.
 Sin embargo, en este caso se aprovecha el principio de localidad debido a como se recorren las matrices.
 El principio de localidad ... #TODO
 
-
+### Inciso B
 
 expMatrices1 : 512
 Tiempo en segundos UN BUCLE 5.297311 
