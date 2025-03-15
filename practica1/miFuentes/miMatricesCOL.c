@@ -1,37 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#define ORDENXFILAS 0
-#define ORDENXCOLUMNAS 1
 
 // Dimension por defecto de las matrices
 int N = 100;
-
-// Retorna el valor de la matriz en la posicion fila y columna segun el orden que este ordenada
-double getValor(double *matriz, int fila, int columna, int orden)
-{
-    if (orden == ORDENXFILAS)
-    {
-        return (matriz[fila * N + columna]);
-    }
-    else
-    {
-        return (matriz[fila + columna * N]);
-    }
-}
-
-// Establece el valor de la matriz en la posicion fila y columna segun el orden que este ordenada
-void setValor(double *matriz, int fila, int columna, int orden, double valor)
-{
-    if (orden == ORDENXFILAS)
-    {
-        matriz[fila * N + columna] = valor;
-    }
-    else
-    {
-        matriz[fila + columna * N] = valor;
-    }
-}
 
 // Para calcular tiempo
 double dwalltime()
@@ -68,30 +40,22 @@ int main(int argc, char *argv[])
     {
         for (j = 0; j < N; j++)
         {
-
-            setValor(A, i, j, ORDENXCOLUMNAS, 1);
-            setValor(B, i, j, ORDENXCOLUMNAS, 1);
-            
+            A[i + j * N] = 1; // ORDENXCOLUMNAS
+            B[i + j * N] = 1; // ORDENXCOLUMNAS
         }
     }
 
     // Realiza la multiplicacion
-
     timetick = dwalltime();
 
     for (i = 0; i < N; i++)
     {
         for (j = 0; j < N; j++)
         {
-            //setValor(C, i, j, ORDENXFILAS, 0);
-            // SE ASUME ORDENXCOLUMNAS
-            C[i * N + j] = 0;
+            C[i + j * N] = 0; // ORDENXCOLUMNAS
             for (k = 0; k < N; k++)
             {
-                //setValor(C, i, j, ORDENXFILAS, getValor(C, i, j, ORDENXFILAS) + getValor(A, i, k, ORDENXFILAS) * getValor(B, k, j, ORDENXFILAS));
-                // SE ASUME ORDENXCOLUMNAS
-                // C[i * N + j] = C[i * N + j] + A[i * N + j] * B[i * N + j];
-                C[i + j * N] = C[i + j * N] * A[i + j * N] + B[i + j * N];
+                C[i + j * N] += A[i + k * N] * B[k + j * N]; // ORDENXCOLUMNAS
             }
         }
     }
@@ -103,7 +67,7 @@ int main(int argc, char *argv[])
     {
         for (j = 0; j < N; j++)
         {
-            check = check && (getValor(C, i, j, ORDENXFILAS) == N);
+            check = check && (C[i + j * N] == N); // ORDENXCOLUMNAS
         }
     }
 
