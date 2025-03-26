@@ -1,9 +1,7 @@
+// cabeceras
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
-
-// Dimension por defecto de las matrices
-int N = 100;
 
 // Para calcular tiempo
 double dwalltime() {
@@ -15,9 +13,12 @@ double dwalltime() {
     return sec;
 }
 
+// =========================== PROGRAMA PRINCIPAL ======================== //
+
 int main(int argc, char *argv[]) {
+    // Variables
     double *A, *B, *C;
-    int i, j, k;
+    int i, j, k, N;
     int check = 1;
     double timetick;
 
@@ -33,26 +34,49 @@ int main(int argc, char *argv[]) {
     B = (double *)malloc(sizeof(double) * N * N);
     C = (double *)malloc(sizeof(double) * N * N);
 
-    // Ambas matrices inicializadas por FILAS
+    // Ambas matrices inicializadas con mismo orden (elegí filas)
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
             A[i * N + j] = 1;
+            // B[i*N+j] = 1;
             C[i * N + j] = 0;
         }
     }
 
+    // =================================== CALCULO ======================== //
+
     timetick = dwalltime();
 
+    // setValor(double *matriz, int fila, int columna, int orden, double valor)
+    // ORDEN POR FILAS: matriz[fila * N + columna] = valor
+    // ORDEN POR COLUMNAS: matriz[fila + columna * N] = valor
+
+    // Construccion de la nueva matriz (A ordenada por columnas)
+    for (i = 0; i < N; i++) {
+        for (j = 0; j < N; j++) {
+            B[i + j * N] = A[i * N + j];
+        }
+    }
+
+    // getValor(double *matriz, int fila, int columna, int orden)
+    // ORDEN POR FILAS: matriz[fila * N + columna]
+    // ORDEN POR COLUMNAS: matriz[fila + columna * N]
+
+    // Multiplicacion
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
             for (k = 0; k < N; k++) {
-                // En este caso, A[k,j] no aprovecha localidad espacial (salto k*N)
-                C[i * N + j] += A[i * N + k] * A[k * N + j];
+                // En este caso, B[k,j] SÍ aprovecha localidad espacial (salto k
+                // unitario)
+                C[i * N + j] += A[i * N + k] * B[k + j * N];
             }
         }
     }
 
     printf("Tiempo en segundos %f\n", dwalltime() - timetick);
+
+    // ============================== FIN DE CALCULOS =========================
+    // //
 
     // Verifica el resultado
     for (i = 0; i < N; i++) {
@@ -66,10 +90,10 @@ int main(int argc, char *argv[]) {
     else
         printf("Multiplicacion de matrices resultado erroneo\n");
 
-    
-        free(A);
-    
+    // Libera memoria alocada
+    free(A);
+    free(B);
     free(C);
 
-    return (0);
+    return 0;
 }

@@ -50,4 +50,35 @@ expMatrices3 : 1024
 Tiempo en segundos DOS BUCLES 33.799275 
 Tiempo en segundos CUATRO BUCLES 33.895008 
 
+### Inciso C
+
+Multiplicacion de matrices AA valor N 1024
+
+Con mismo orden
+Tiempo en segundos 69.288260
+
+Con diferente orden
+Tiempo en segundos 12.529852
+
+No se esta aprovechando la localidad en el primer caso
+
+### Inciso D
+
+La relacion entre el tamaño de la matriz y el bloque dependera en el caso mas teorico del tamaño de cache
+En el caso ideal los bloques parciales tanto de la matriz resultado como de las matrices a multiplicar entra directamente en la cache
+Esto producira menos fallos de cache ya que todos los datos entraran el la cache
+
+En el mundo real, puede suceder que al traer los bloques de memoria me falte o sobre cache (supongamos una palabra)
+En este caso entra en accion el principio de localidad, sera necesario traerse de memoria el bloque correcto y tener en cuenta el bloque contiguo que se va a tomar en la siguiente iteracion. 
+
+### Inciso E
+
+PENDIENTE
+
+## Ejercicio 2 - Fibonacci
+
+El metodo de calculo para fibonacci recursivo es varios ordenes de magnitud mas lento comparado al metodo iterativo en el caso de N = 50
+Esto se debe al excesivo overhead que produce el metodo recursivo
+Este metodo realiza una nueva llamada a funcion para cada calculo nuevo del siguiente numero en la serie
+
 
