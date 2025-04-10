@@ -1,0 +1,8 @@
+Para el ejercicio 2 y 3
+
+Comparar con la funcion de dwalltime
+En vez de hacer que cada hilo (utilizando seccion critica, mutex) accedan a la variable compartida
+Guardar las respuestas parciales en un vector variable compartida
+Al final del programa que el main se encargue del ultimo calculo
+
+Es esto un alternativa que requiere mas memoria pero que a su vez es mas rapida?

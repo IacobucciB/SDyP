@@ -3,43 +3,64 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-int N = 100;
+int N = 1024;
+int T = 4;
 double *A;
 double *B;
 double *C;
 
-/*
-(N / NumThreads) * id --> inicio
-(N / NumThreads) * (id + 1) --> fin
-*/
+double dwalltime(){
+        double sec;
+        struct timeval tv;
 
-void *funcion(void *arg) {
+        gettimeofday(&tv,NULL);
+        sec = tv.tv_sec + tv.tv_usec/1000000.0;
+        return sec;
+}
+
+void *thread(void *arg) {
     int tid = *(int *)arg;
-    printf("Hilo id: %d \n\n", tid);
-    // codigo
-
-    // mutex para saber el valor de N?
-
+    printf("Thread %d \n", tid);
+    int slice = N/T;
+    int ini = tid * slice;
+    int lim = ini + slice;
+    double sum;
     int i, j, k;
-    for (i = 0; i < N; i++) {
+
+// TODO Optimize indexes
+// iN = i*N; iJ = j*N
+
+    for (i = ini; i < lim; i++) {
         for (j = 0; j < N; j++) {
-            C[i * N + j] = 0;  // ORDENXFILAS
+	    sum = 0;
             for (k = 0; k < N; k++) {
-                C[i * N + j] += A[i * N + k] * B[k * N + j];  // ORDENXFILAS
+		sum = sum + A[i*N + k] * B[k + j*N];
             }
+	    C[i*N + j] = sum;
         }
     }
 
     pthread_exit(NULL);
 }
 
-int main(int argc, char *argv[]) {
-    // double *A, *B, *C;
-    int i, j, k;
+void printMatrix(void) {
+    int i, j;
+    for (i = 0; i < N; i++) {
+	printf("\n");
+	for (j = 0; j < N; j++) {
+	    printf("%.0f ", C[i*N + j]);
+	}
+    }
+    printf("\n");
+}
+
+// int main(int argc, char *argv[]) {
+int main(void) {
+    int i, j;
     int check = 1;
     double timetick;
 
-    int T = atoi(argv[1]);
+
     int threads_ids[T];
     pthread_t misThreads[T];
 
@@ -47,22 +68,19 @@ int main(int argc, char *argv[]) {
     B = (double *)malloc(sizeof(double) * N * N);
     C = (double *)malloc(sizeof(double) * N * N);
 
-    // Inicializa las matrices A y B en 1, el resultado sera una matriz con
-    // todos sus valores en N
+
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
-            A[i * N + j] = 1;  // ORDENXFILAS
-            B[i * N + j] = 1;  // ORDENXFILAS
+            A[i * N + j] = 1;
+            B[i * N + j] = 1;
         }
     }
-
-    // Realiza la multiplicacion
+    
     timetick = dwalltime();
 
     for (int id = 0; id < T; id++) {
         threads_ids[id] = id;
-        pthread_create(&misThreads[id], NULL, &funcion,
-                       (void *)&threads_ids[id]);
+        pthread_create(&misThreads[id], NULL, &thread,(void *)&threads_ids[id]);
     }
 
     for (int id = 0; id < T; id++) {
@@ -70,6 +88,24 @@ int main(int argc, char *argv[]) {
     }
 
     printf("Tiempo en segundos %f\n", dwalltime() - timetick);
+
+    for (i = 0; i < N; i++) {
+	for (j = 0; j < N; j++) {
+            check = check && (C[i * N + j] == N);
+	}
+    }   
+
+    if (check) {
+	printf("Multiplicacion de matrices resultado correcto\n");
+    } else {
+	printf("Multiplicacion de matrices resultado erroneo\n");
+	printMatrix();
+    }
+
+    
+    free(A);
+    free(B);
+    free(C);
 
     return 0;
 }
